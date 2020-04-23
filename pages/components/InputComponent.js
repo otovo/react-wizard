@@ -2,15 +2,15 @@
 import React, { useState } from 'react';
 
 type Props = {
-  name: string,
+  placeholder: string,
 };
 
-const InputComponent = ({ name }: Props) => {
+const InputComponent = ({ placeholder }: Props) => {
   const [text, setText] = useState('');
   return (
     <textarea
       className="w-100 h3"
-      placeholder={name}
+      placeholder={placeholder}
       value={text}
       onChange={ev => setText(ev.target.value)}
     />

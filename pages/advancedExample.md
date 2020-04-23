@@ -12,14 +12,21 @@ import WizardExample from './components/WizardExample';
 
 ## Todo
 
-- [x] Add support for registering steps
-- [x] Only render active step
-- [x] Add support for changing steps
-- [x] Add support for updating steps
-- [x] Add support for autoskip steps
-- [x] Add support for step validation
-- [x] Add support for Jest/tests
-- [x] Add support for `onComplete`
+- [ ] Add support for WIZARD_COMPLETE 
+Re-implement `statemanager` support:
+- [ ] `updateStep()`
+- [ ] `getActiveStep()`
+- [ ] `getItem()`
+- [ ] `setItem()`
+
+
+## Example 
+
+This example uses async validation for step 2 and 3. Use the debug panel to tweak settings
+
+<WizardExample />
+
+---
 
 ## Test
 
@@ -29,12 +36,3 @@ import WizardExample from './components/WizardExample';
 ## Feature, or bug?
 
 - [ ] First step is not skippable (initially)
-
----
-
-
-## Example 
-
-This example uses async validation for step 2 and 3. Use the debug panel to tweak settings
-
-<WizardExample />

@@ -8,12 +8,9 @@ const StepOne = () => {
   }, []);
 
   return (
-    <Step
-      name="step 1"
-      validator={() => {
-        console.log('validator done');
-      }}>
+    <Step name="step 1">
       <p className="f3 tc">First step</p>
+      <p className="tc">No validation here</p>
     </Step>
   );
 };

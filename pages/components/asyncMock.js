@@ -1,7 +1,10 @@
-export const someAsyncFunc = () =>
-  new Promise(res =>
+export const someAsyncFunc = (shouldPass = true) =>
+  new Promise((resolve, reject) =>
     setTimeout(() => {
-      console.log('inner timeout done');
-      res();
+      console.log('inner timeout done', shouldPass);
+      if (shouldPass) {
+        return resolve();
+      }
+      return reject();
     }, 800),
   );

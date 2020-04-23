@@ -29,8 +29,7 @@ const Step = ({ children, name, validator, autoSkip, state }: Props) => {
         autoSkip,
       });
     }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [name, autoSkip, validator, initialized]); // adding all deps causes infinite reloads - to be fixed later!
+  }, [autoSkip, validator, initialized, name, updateStep]);
 
   useEffect(() => {
     if (state && stateManager) {

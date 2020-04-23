@@ -6,9 +6,10 @@ import { someAsyncFunc } from './asyncMock';
 
 type Props = {
   stepEnabled: boolean,
+  shouldPassValidation: boolean,
 };
 
-const StepTwo = ({ stepEnabled }: Props) => {
+const StepTwo = ({ stepEnabled, shouldPassValidation }: Props) => {
   useEffect(() => {
     console.log('step 2 mounted');
   }, []);
@@ -18,10 +19,9 @@ const StepTwo = ({ stepEnabled }: Props) => {
       name="step 2"
       autoSkip={!stepEnabled}
       validator={async () => {
-        await someAsyncFunc();
-        console.log('waiting for timeout done');
+        await someAsyncFunc(shouldPassValidation);
       }}>
-      <InputComponent name="step 2" />
+      <InputComponent placeholder="Step 2: Input state will NOT persist on step change" />
     </Step>
   );
 };

@@ -11,3 +11,9 @@ declare type Losen$Step = {|
   autoSkip: ?boolean,
   state: ?Array<{| [string]: string |}>,
 |};
+
+declare type Losen$State = {|
+  index: number,
+  steps: Array<Losen$Step>,
+  isLoading: boolean,
+|};

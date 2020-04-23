@@ -2,31 +2,57 @@
 import React, { useState } from 'react';
 
 import { Wizard, Step } from '../../src';
-import { UrlStateManager } from '../../src/state-managers/url-state-manager';
+// import { UrlStateManager } from '../../src/state-managers/url-state-manager';
 import Controls from './Controls';
-import StepWithInput from './StepWithInput';
+import StepPersistingState from './StepPersistingState';
 import StepOne from './StepOne';
 import StepTwo from './StepTwo';
+import { someAsyncFunc } from './asyncMock';
+import Emoji from './Emoji';
+import Button from './Button';
 
 const WizardExample = () => {
   const [stepEnabled, setEnabledStep] = useState(true);
   const [passValidation, setPassValidation] = useState(true);
+  const [isComplete, setIsComplete] = useState(false);
 
   function onComplete(step) {
+    setIsComplete(true);
     console.log('Wizard completed ', step);
   }
+
+  if (isComplete) {
+    return (
+      <div className="tc">
+        <h2>
+          Wizard completed <Emoji emoji="🎉" />
+        </h2>
+        <Button onClick={() => setIsComplete(false)}>Start over</Button>
+      </div>
+    );
+  }
+
   return (
     <>
-      <Wizard onComplete={onComplete} stateManager={UrlStateManager} debug>
+      <Wizard
+        onComplete={onComplete}
+        // stateManager={UrlStateManager}
+        debug>
         <div>
           <StepOne />
-          <StepTwo stepEnabled={stepEnabled} />
-          <StepWithInput />
+          <StepTwo
+            shouldPassValidation={passValidation}
+            stepEnabled={stepEnabled}
+          />
 
-          <Step
-            name="step 4"
-            validator={() => new Promise(res => setTimeout(() => res(), 800))}>
-            <p className="f3 tc">Third step</p>
+          <StepPersistingState />
+
+          <Step name="step 4" validator={someAsyncFunc}>
+            <div className="tc">
+              <h2 className="f3">Final step</h2>
+              <img alt="Dog" src="https://placedog.net/500" />
+              <p>This is dog</p>
+            </div>
           </Step>
         </div>
 
@@ -35,8 +61,8 @@ const WizardExample = () => {
 
       <hr />
 
-      <div className="pa4 courier bg-black-05">
-        <h3 className="db">Debug panel</h3>
+      <div className="ph4 pv3 courier bg-black-05">
+        <h3 className="db mt0">Debug panel</h3>
         <label htmlFor="step-2-checkbox">
           <input
             id="step-2-checkbox"
