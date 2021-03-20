@@ -1,15 +1,16 @@
 // @flow
-import Controls, { ControlsContext } from './Controls';
-import Step, { StepContext } from './Step';
-import Wizard, { ValidationError } from './Wizard';
 import { UrlStateManager } from './state-managers/url-state-manager';
+import { useStateContext, useActionContext } from './contexts';
+import Controls from './Controls';
+import Step from './Step';
+import Wizard, { ValidationError } from './Wizard';
 
 export {
   Controls,
-  ControlsContext,
   Step,
-  StepContext,
+  UrlStateManager,
+  useActionContext,
+  useStateContext,
   ValidationError,
   Wizard,
-  UrlStateManager,
 };

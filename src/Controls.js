@@ -1,7 +1,5 @@
 // @flow
-import { createContext, useContext } from 'react';
-
-export const ControlsContext = createContext<Object>(null);
+import { useActionContext, useStateContext } from './contexts';
 
 type Props = {|
   render: (
@@ -15,14 +13,8 @@ type Props = {|
 |};
 
 const Controls = ({ render }: Props) => {
-  const {
-    onNext,
-    onPrevious,
-    isFirst,
-    isLast,
-    isLoading,
-    activeIndex,
-  } = useContext(ControlsContext);
+  const { isFirst, isLast, isLoading, activeIndex } = useActionContext();
+  const { onNext, onPrevious } = useStateContext();
 
   return render(onNext, onPrevious, isFirst, isLast, isLoading, activeIndex);
 };

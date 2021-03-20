@@ -1,9 +1,8 @@
 // @flow
-import React, { useState, useEffect, useCallback } from 'react';
+import React, { useState, useEffect, useCallback, useMemo } from 'react';
 
 import { findNextValid, findPreviousValid } from './utils';
-import { ControlsContext } from './Controls';
-import { StepContext } from './Step';
+import { StateContext, ActionContext } from './contexts';
 
 export class ValidationError extends Error {}
 
@@ -118,28 +117,34 @@ const Wizard = ({ children, onComplete, stateManager, debug }: Props) => {
     onLoad();
   }, [steps, debug, stateManager, onLoad]);
 
+  const actions = useMemo(
+    () => ({
+      onNext,
+      onPrevious,
+      registerStep,
+      updateStep,
+    }),
+    [index, isLoading, steps],
+  );
+
+  const state = useMemo(
+    () => ({
+      isLoading,
+      activeIndex: index,
+      activeStep: index === null ? { name: '' } : steps[index],
+      initialized: index === null ? false : !!steps[index],
+      isFirst:
+        index !== null ? findPreviousValid(steps, index) === index : false,
+      isLast: index !== null ? findNextValid(steps, index) === index : false,
+      stateManager,
+    }),
+    [index, isLoading, steps],
+  );
+
   return (
-    <ControlsContext.Provider
-      value={{
-        onNext,
-        onPrevious,
-        isLoading,
-        isFirst:
-          index !== null ? findPreviousValid(steps, index) === index : false,
-        isLast: index !== null ? findNextValid(steps, index) === index : false,
-        activeIndex: index,
-      }}>
-      <StepContext.Provider
-        value={{
-          registerStep,
-          activeStep: index === null ? { name: '' } : steps[index],
-          initialized: index === null ? false : !!steps[index],
-          updateStep,
-          stateManager,
-        }}>
-        {children}
-      </StepContext.Provider>
-    </ControlsContext.Provider>
+    <ActionContext.Provider value={actions}>
+      <StateContext.Provider value={state}>{children}</StateContext.Provider>
+    </ActionContext.Provider>
   );
 };
 

@@ -1,7 +1,6 @@
 // @flow
-import { useEffect, createContext, useContext } from 'react';
-
-export const StepContext = createContext<Object>(null);
+import { useEffect } from 'react';
+import { useStateContext, useActionContext } from './contexts';
 
 type Props = {|
   children: React$Node,
@@ -9,13 +8,8 @@ type Props = {|
 |};
 
 const Step = ({ children, name, validator, autoSkip, state }: Props) => {
-  const {
-    registerStep,
-    activeStep,
-    updateStep,
-    initialized,
-    stateManager,
-  } = useContext(StepContext);
+  const { activeStep, initialized, stateManager } = useStateContext();
+  const { registerStep, updateStep } = useActionContext();
 
   useEffect(() => {
     if (!initialized) {

@@ -4,16 +4,9 @@ import React, { useState } from 'react';
 import { Wizard, Step } from '../../src';
 import { UrlStateManager } from '../../src/state-managers/url-state-manager';
 import Controls from './Controls';
-import InputComponent from './InputComponent';
 import StepWithInput from './StepWithInput';
-
-const someAsyncFunc = () =>
-  new Promise(res =>
-    setTimeout(() => {
-      console.log('inner timeout done');
-      res();
-    }, 800),
-  );
+import StepOne from './StepOne';
+import StepTwo from './StepTwo';
 
 const WizardExample = () => {
   const [stepEnabled, setEnabledStep] = useState(true);
@@ -26,23 +19,8 @@ const WizardExample = () => {
     <>
       <Wizard onComplete={onComplete} stateManager={UrlStateManager} debug>
         <div>
-          <Step
-            name="step 1"
-            validator={() => {
-              console.log('validator done');
-            }}>
-            <p className="f3 tc">First step</p>
-          </Step>
-          <Step
-            name="step 2"
-            autoSkip={!stepEnabled}
-            validator={async () => {
-              await someAsyncFunc();
-              console.log('waiting for timeout done');
-            }}>
-            <InputComponent name="step 2" />
-          </Step>
-
+          <StepOne />
+          <StepTwo stepEnabled={stepEnabled} />
           <StepWithInput />
 
           <Step
