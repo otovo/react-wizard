@@ -11,6 +11,7 @@ type Props = {|
     isLast: boolean,
     isLoading: boolean,
     activeIndex: number,
+    isStepValid: boolean,
   ) => React$Node,
 |};
 
@@ -22,9 +23,18 @@ const Controls = ({ render }: Props) => {
     isLast,
     isLoading,
     activeIndex,
+    isStepValid,
   } = useContext(ControlsContext);
 
-  return render(onNext, onPrevious, isFirst, isLast, isLoading, activeIndex);
+  return render(
+    onNext,
+    onPrevious,
+    isFirst,
+    isLast,
+    isLoading,
+    activeIndex,
+    isStepValid,
+  );
 };
 
 export default Controls;

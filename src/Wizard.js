@@ -17,12 +17,14 @@ type Props = {|
 const Wizard = ({ children, onComplete, stateManager, debug }: Props) => {
   const [index, setIndex] = useState<number | null>(null);
   const [steps, setSteps] = useState<Array<Losen$Step>>([]);
+  const [validSteps, setValidSteps] = useState<Array<boolean>>([]);
   const [isLoading, setLoadingState] = useState(false);
 
   function registerStep(step) {
     const alreadyRegistered = steps.map(el => el.name).includes(step.name);
     if (!alreadyRegistered) {
       setSteps(previousSteps => [...previousSteps, step]);
+      setValidSteps(previousSteps => [...previousSteps, true]);
     }
   }
 
@@ -39,11 +41,20 @@ const Wizard = ({ children, onComplete, stateManager, debug }: Props) => {
     }
   }
 
+  function updateValidSteps(stepIndex, isValid) {
+    setValidSteps(previousSteps => [
+      ...previousSteps.slice(0, stepIndex),
+      isValid,
+      ...previousSteps.slice(stepIndex + 1),
+    ]);
+  }
+
   async function onNext() {
     if (index === null) {
       return;
     }
     const { validator } = steps[index];
+
     const next = findNextValid(steps, index);
 
     const nextAction =
@@ -55,8 +66,10 @@ const Wizard = ({ children, onComplete, stateManager, debug }: Props) => {
       try {
         setLoadingState(true);
         await validator();
+        updateValidSteps(index, true);
         nextAction();
       } catch (error) {
+        updateValidSteps(index, false);
         if (error instanceof ValidationError) {
           console.error('ReactLosen', error); // eslint-disable-line
         } else {
@@ -128,6 +141,7 @@ const Wizard = ({ children, onComplete, stateManager, debug }: Props) => {
           index !== null ? findPreviousValid(steps, index) === index : false,
         isLast: index !== null ? findNextValid(steps, index) === index : false,
         activeIndex: index,
+        isStepValid: index !== null && validSteps ? validSteps[index] : true,
       }}>
       <StepContext.Provider
         value={{
