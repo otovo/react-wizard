@@ -5,16 +5,23 @@ import { findNextValid, findPreviousValid } from './utils';
 import { ControlsContext } from './Controls';
 import { StepContext } from './Step';
 
-export class ValidationError extends Error {}
-
 type Props = {|
   onComplete: (currentStep: string) => void,
   children: React$Node,
   debug?: boolean,
   stateManager?: Losen$StateManager,
+  onStepChanged: () => void,
+  onValidationFailed: () => void,
 |};
 
-const Wizard = ({ children, onComplete, stateManager, debug }: Props) => {
+const Wizard = ({
+  children,
+  onComplete,
+  stateManager,
+  debug,
+  onStepChanged,
+  onValidationFailed,
+}: Props) => {
   const [index, setIndex] = useState<number | null>(null);
   const [steps, setSteps] = useState<Array<Losen$Step>>([]);
   const [isLoading, setLoadingState] = useState(false);
@@ -28,7 +35,7 @@ const Wizard = ({ children, onComplete, stateManager, debug }: Props) => {
 
   function updateStep(step) {
     const stepIndex = steps.findIndex(el => el.name === step.name);
-    if (stepIndex == -1) {
+    if (stepIndex === -1) {
       registerStep(step);
     } else {
       setSteps(previousSteps => [
@@ -49,22 +56,20 @@ const Wizard = ({ children, onComplete, stateManager, debug }: Props) => {
     const nextAction =
       next === index
         ? () => onComplete(steps[index].name)
-        : () => setIndex(next);
+        : () => {
+            setIndex(next);
+            onStepChanged();
+          };
 
     if (validator) {
-      try {
-        setLoadingState(true);
-        await validator();
+      setLoadingState(true);
+      const res = await validator();
+      if (res) {
         nextAction();
-      } catch (error) {
-        if (error instanceof ValidationError) {
-          console.error('ReactLosen', error); // eslint-disable-line
-        } else {
-          throw error;
-        }
-      } finally {
-        setLoadingState(false);
+      } else {
+        onValidationFailed();
       }
+      setLoadingState(false);
     } else {
       nextAction();
     }
@@ -84,6 +89,7 @@ const Wizard = ({ children, onComplete, stateManager, debug }: Props) => {
     }
     const prev = findPreviousValid(steps, index);
     setIndex(prev);
+    onStepChanged();
 
     if (stateManager) {
       const currentStep = steps[index];
@@ -146,5 +152,7 @@ const Wizard = ({ children, onComplete, stateManager, debug }: Props) => {
 Wizard.defaultProps = {
   debug: false,
   stateManager: undefined,
+  onStepChanged: () => {},
+  onValidationFailed: () => {},
 };
 export default Wizard;
